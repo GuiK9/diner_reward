@@ -1,5 +1,7 @@
 package rewards.internal.account;
 
+import org.springframework.context.annotation.Profile;
+
 /**
  * Loads account aggregates. Called by the reward network to find and reconstitute Account entities from an external
  * form such as a set of RDMS rows.

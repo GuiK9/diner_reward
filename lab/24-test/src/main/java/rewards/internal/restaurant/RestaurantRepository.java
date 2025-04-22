@@ -1,5 +1,7 @@
 package rewards.internal.restaurant;
 
+import org.springframework.context.annotation.Profile;
+
 /**
  * Loads restaurant aggregates. Called by the reward network to find and reconstitute Restaurant entities from an
  * external form such as a set of RDMS rows.
