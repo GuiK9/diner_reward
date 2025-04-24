@@ -48,6 +48,7 @@ public class JdbcRewardRepositoryTests {
 
 	@Test
 	public void testCreateReward() throws SQLException {
+		System.out.println("========== FLAG ==========");
 		Dining dining = Dining.createDining("100.00", "1234123412341234", "0123456789");
 
 		Account account = new Account("1", "Keith and Keri Donald");
@@ -74,8 +75,9 @@ public class JdbcRewardRepositoryTests {
 		//	  (If you are using Gradle, comment out the test exclude in
 		//    the build.gradle file.)
 		//
-		
-		Map<String, Object> values = null;
+
+		String sql = "SELECT * FROM T_REWARD WHERE CONFIRMATION_NUMBER = ?";
+		Map<String, Object> values = jdbcTemplate.queryForMap(sql, 1);
 		verifyInsertedValues(confirmation, dining, values);
 	}
 
@@ -92,7 +94,9 @@ public class JdbcRewardRepositoryTests {
 	private int getRewardCount() throws SQLException {
 		// TODO-01: Use JdbcTemplate to query for the number of rows in the T_REWARD table
 		// - Use "SELECT count(*) FROM T_REWARD" as SQL statement
-		return -1;
+		String sql = "SELECT count(*) FROM T_REWARD";
+		Integer total = jdbcTemplate.queryForObject(sql, Integer.class);
+		return total;
 	}
 
 	private DataSource createTestDataSource() {
