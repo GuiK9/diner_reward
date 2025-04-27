@@ -1,6 +1,7 @@
 package rewards.internal.reward;
 
 import common.datetime.SimpleDate;
+import org.springframework.jdbc.core.JdbcTemplate;
 import rewards.AccountContribution;
 import rewards.Dining;
 import rewards.RewardConfirmation;
@@ -37,9 +38,11 @@ import java.sql.*;
 public class JdbcRewardRepository implements RewardRepository {
 
 	private DataSource dataSource;
+	private JdbcTemplate jdbcTemplate;
 
 	public JdbcRewardRepository(DataSource dataSource) {
 		this.dataSource = dataSource;
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 
 	public RewardConfirmation confirmReward(AccountContribution contribution, Dining dining) {
