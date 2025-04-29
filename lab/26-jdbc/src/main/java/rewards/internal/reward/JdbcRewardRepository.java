@@ -1,6 +1,5 @@
 package rewards.internal.reward;
 
-import common.datetime.SimpleDate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import rewards.AccountContribution;
 import rewards.Dining;
@@ -53,14 +52,7 @@ public class JdbcRewardRepository implements RewardRepository {
 		try (Connection conn = dataSource.getConnection();
 			 PreparedStatement ps = conn.prepareStatement(sql)) {
 			
-			ps.setString(1, confirmationNumber);
-			ps.setBigDecimal(2, contribution.getAmount().asBigDecimal());
-			ps.setDate(3, new Date(SimpleDate.today().inMilliseconds()));
-			ps.setString(4, contribution.getAccountNumber());
-			ps.setString(5, dining.getMerchantNumber());
-			ps.setDate(6, new Date(dining.getDate().inMilliseconds()));
-			ps.setBigDecimal(7, dining.getAmount().asBigDecimal());
-			ps.execute();
+
 		} catch (SQLException e) {
 			throw new RuntimeException("SQL exception occurred inserting reward record", e);
 		}
