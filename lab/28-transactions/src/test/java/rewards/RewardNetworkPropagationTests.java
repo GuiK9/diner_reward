@@ -8,7 +8,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import javax.sql.DataSource;
 
@@ -58,6 +61,7 @@ public class RewardNetworkPropagationTests {
 	}
 
 	@Test
+	@Transactional()
 	public void testPropagation() {
 		// Open a transaction for testing
 		TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
