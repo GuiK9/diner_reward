@@ -1,9 +1,15 @@
 package accounts.client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import common.money.Percentage;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.json.JacksonJsonParser;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import rewards.internal.account.Account;
@@ -22,14 +28,13 @@ public class AccountClientTests {
 	private Random random = new Random();
 	
 	@Test
-	@Disabled
 	public void listAccounts() {
 		// TODO-03: Run this test
 		// - Remove the @Disabled on this test method.
 		// - Then, use the restTemplate to retrieve an array containing all Account instances.
 		// - Use BASE_URL to help define the URL you need: BASE_URL + "/..."
 		// - Run the test and ensure that it passes.
-		Account[] accounts = null; // Modify this line to use the restTemplate
+		Account[] accounts = restTemplate.getForObject(BASE_URL + "/accounts", Account[].class); // Modify this line to use the restTemplate
 		
 		assertNotNull(accounts);
 		assertTrue(accounts.length >= 21);
@@ -39,13 +44,12 @@ public class AccountClientTests {
 	}
 	
 	@Test
-	@Disabled
 	public void getAccount() {
 		// TODO-05: Run this test
 		// - Remove the @Disabled on this test method.
 		// - Then, use the restTemplate to retrieve the Account with id 0 using a URI template
 		// - Run the test and ensure that it passes.
-		Account account = null; // Modify this line to use the restTemplate
+		Account account = restTemplate.getForObject(BASE_URL + "/accounts/0", Account.class); // Modify this line to use the restTemplate
 		
 		assertNotNull(account);
 		assertEquals("Keith and Keri Donald", account.getName());
@@ -54,13 +58,20 @@ public class AccountClientTests {
 	}
 	
 	@Test
-	@Disabled
 	public void createAccount() {
 		// Use a unique number to avoid conflicts
 		String number = String.format("12345%4d", random.nextInt(10000));
 		Account account = new Account(number, "John Doe");
 		account.addBeneficiary("Jane Doe");
-		
+
+		ObjectMapper objectMapper = new ObjectMapper();
+        try {
+			String s = objectMapper.writeValueAsString(account);
+			System.out.println(s);
+
+		} catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 		//	TODO-08: Create a new Account
 		//	- Remove the @Disabled on this test method.
 		//	- Create a new Account by POSTing to the right URL and
@@ -68,12 +79,19 @@ public class AccountClientTests {
 		//  - Note that 'RestTemplate' has two methods for this.
 		//  - Use the one that returns the location of the newly created
 		//    resource and assign that to a variable.
-		URI newAccountLocation = null; // Modify this line to use the restTemplate
+
+
+		URI newAccountLocation = restTemplate.postForLocation(BASE_URL + "/accounts", account); // Modify this line to use
+		// the
+		// restTemplate
 
 		//	TODO-09: Retrieve the Account you just created from
 		//	         the location that was returned.
 		//	- Run this test, then. Make sure the test succeeds.
-		Account retrievedAccount = null; // Modify this line to use the restTemplate
+		System.out.println(newAccountLocation);
+		Account retrievedAccount = restTemplate.getForObject(newAccountLocation, Account.class); // Modify this line to
+		// use the
+		// restTemplate
 		
 		assertEquals(account.getNumber(), retrievedAccount.getNumber());
 		
