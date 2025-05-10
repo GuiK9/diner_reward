@@ -49,7 +49,7 @@ public class AccountWebClientTests {
                                       .bodyToMono(Account[].class)
                                       .block();
 
-        System.out.println(accounts.length);
+        System.out.println(accountss.length);
         assertTrue(accounts.length >= 21, "Expected 21 accounts, but found " + accounts.length);
         assertEquals("Keith and Keri Donald", accounts[0].getName());
         assertEquals(2, accounts[0].getBeneficiaries().size());
