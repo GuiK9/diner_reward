@@ -3,12 +3,15 @@ package accounts.services;
 import accounts.RestWsApplication;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.Headers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -24,7 +27,6 @@ class AccountServiceMethodSecurityTest {
     private TestRestTemplate restTemplate;
 
     @Test
-    @Disabled
     void getAuthoritiesForUser_should_return_403_for_user() {
 
         ResponseEntity<String> responseEntity = restTemplate.withBasicAuth("user", "user")
@@ -34,7 +36,6 @@ class AccountServiceMethodSecurityTest {
     }
 
     @Test
-    @Disabled
     void getAuthoritiesForUser_should_return_authorities_for_admin() {
 
         String[] authorities = restTemplate.withBasicAuth("admin", "admin")
@@ -52,9 +53,16 @@ class AccountServiceMethodSecurityTest {
     //           "ROLE_USER".
     @Test
     public void getAuthoritiesForUser_should_return_authorities_for_superadmin() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth("superadmin", "superadmin");
 
+        HttpEntity<?> entity = new HttpEntity<>(headers);
 
+        String url = "/authorities?username=superadmin";
+        ResponseEntity<List> response = restTemplate.exchange(url, HttpMethod.GET, entity, List.class);
 
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(List.of("ROLE_ADMIN", "ROLE_SUPERADMIN", "ROLE_USER"));
     }
 
 }
